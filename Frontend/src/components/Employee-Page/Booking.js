@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { MdOutlineChair } from "react-icons/md";
 import axios from "axios";
 import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { MdOutlineChair } from "react-icons/md";
 import ReservationHistory from "./ReservationHistory";
 
 import Navbar from "./Navbar";
 
-const API_BASE_URL = 'http://localhost:5500';// Replace with your API base URL
+const API_BASE_URL = "http://localhost:5500"; // Replace with your API base URL
 const getToken = () => Cookies.get("token");
 
 const BookingPage = () => {
@@ -44,7 +44,11 @@ const BookingPage = () => {
         // Set initial date and time
         const now = new Date();
         const formattedDate = now.toISOString().split("T")[0];
-        const formattedTime = now.toTimeString().split(":").slice(0, 2).join(":");
+        const formattedTime = now
+            .toTimeString()
+            .split(":")
+            .slice(0, 2)
+            .join(":");
         setDate(formattedDate);
         setTime(formattedTime);
 
@@ -53,9 +57,12 @@ const BookingPage = () => {
 
     const handleGetReservations = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/reservations`, {
-                headers: { authorization: `Bearer ${getToken()}` },
-            });
+            const response = await axios.get(
+                `${API_BASE_URL}/api/reservations`,
+                {
+                    headers: { authorization: `Bearer ${getToken()}` },
+                }
+            );
 
             setReservations(response.data);
         } catch (error) {
@@ -78,7 +85,9 @@ const BookingPage = () => {
             seats: [selectedSeat],
             floor,
             date,
-            timeSlot: `${time}-${parseInt(time.split(":"[0])) + parseInt(duration)}:00`,
+            timeSlot: `${time}-${
+                parseInt(time.split(":"[0])) + parseInt(duration)
+            }:00`,
         };
 
         try {
@@ -90,17 +99,26 @@ const BookingPage = () => {
                         : chair
                 ),
             }));
-            const response = await axios.post(`${API_BASE_URL}/api/reserve`, body, {
-                headers: { authorization: `Bearer ${getToken()}` },
-            });
+            const response = await axios.post(
+                `${API_BASE_URL}/api/reserve`,
+                body,
+                {
+                    headers: { authorization: `Bearer ${getToken()}` },
+                }
+            );
 
             await handleGetReservations();
 
             setSeats(updatedSeats);
             setSelectedSeat(null);
-            alert(response.data.message || `Seat ${selectedSeat} reserved successfully.`);
+            alert(
+                response.data.message ||
+                    `Seat ${selectedSeat} reserved successfully.`
+            );
         } catch (error) {
-            setMessage(error.response?.data?.message || "Error reserving seats.");
+            setMessage(
+                error.response?.data?.message || "Error reserving seats."
+            );
             alert(message);
         }
     };
@@ -110,12 +128,14 @@ const BookingPage = () => {
             <Navbar />
             <div className="p-6">
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold mb-4 text-center">Reservation Form</h2>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium">Floor</label>
+                    <h2 className="text-xl font-bold mb-4">Reservation Form</h2>
+                    <div className="flex gap-4 items-end w-full">
+                        <div className="flex flex-col flex-grow">
+                            <label className="block mb-1 font-medium">
+                                Floor
+                            </label>
                             <select
-                                className="w-full p-2 mt-1 border rounded-md"
+                                className="border px-3 py-2 rounded-md w-full"
                                 value={floor}
                                 onChange={(e) => setFloor(e.target.value)}
                             >
@@ -125,32 +145,37 @@ const BookingPage = () => {
                             </select>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium">Date</label>
+                        <div className="flex flex-col flex-grow">
+                            <label className="block mb-1 font-medium">
+                                Date
+                            </label>
                             <input
                                 type="date"
-                                className="w-full p-2 mt-1 border rounded-md"
+                                className="border px-3 py-2 rounded-md w-full"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium">Time</label>
+                        <div className="flex flex-col flex-grow">
+                            <label className="block mb-1 font-medium">
+                                Time
+                            </label>
                             <input
                                 type="time"
-                                className="w-full p-2 mt-1 border rounded-md"
+                                className="border px-3 py-2 rounded-md w-full"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
                             />
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-medium">Duration (hours)</label>
+                        <div className="flex flex-col flex-grow">
+                            <label className="block mb-1 font-medium">
+                                Duration (hours)
+                            </label>
                             <input
                                 type="number"
                                 min="1"
-                                className="w-full p-2 mt-1 border rounded-md"
+                                className="border px-3 py-2 rounded-md w-ful"
                                 value={duration}
                                 onChange={(e) => setDuration(e.target.value)}
                             />
@@ -172,30 +197,50 @@ const BookingPage = () => {
                                     Table {table.table}
                                 </div>
                                 {table.chairs.map((chair, index) => {
-                                    const angle = (360 / table.chairs.length) * index;
+                                    const angle =
+                                        (360 / table.chairs.length) * index;
                                     return (
                                         <button
                                             key={chair.number}
-                                            aria-label={`Seat ${chair.number}, ${
-                                                chair.reserved ? "reserved" : "available"
+                                            aria-label={`Seat ${
+                                                chair.number
+                                            }, ${
+                                                chair.reserved
+                                                    ? "reserved"
+                                                    : "available"
                                             }`}
                                             onClick={() => {
                                                 if (!chair.reserved) {
-                                                    setSelectedSeat(chair.number);
+                                                    setSelectedSeat(
+                                                        chair.number
+                                                    );
                                                 }
                                             }}
                                             className={`absolute transform -translate-x-1/2 -translate-y-1/2 text-2xl ${
                                                 chair.reserved
                                                     ? "text-red-500 cursor-not-allowed"
-                                                    : selectedSeat === chair.number
+                                                    : selectedSeat ===
+                                                      chair.number
                                                     ? "text-blue-500"
                                                     : "text-gray-400"
                                             }`}
                                             style={{
-                                                top: `${50 +
-                                                    40 * Math.sin((angle * Math.PI) / 180)}%`,
-                                                left: `${50 +
-                                                    40 * Math.cos((angle * Math.PI) / 180)}%`,
+                                                top: `${
+                                                    50 +
+                                                    40 *
+                                                        Math.sin(
+                                                            (angle * Math.PI) /
+                                                                180
+                                                        )
+                                                }%`,
+                                                left: `${
+                                                    50 +
+                                                    40 *
+                                                        Math.cos(
+                                                            (angle * Math.PI) /
+                                                                180
+                                                        )
+                                                }%`,
                                                 zIndex: chair.reserved ? 1 : 2,
                                             }}
                                             disabled={chair.reserved}
