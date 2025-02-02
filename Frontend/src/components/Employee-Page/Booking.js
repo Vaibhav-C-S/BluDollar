@@ -19,6 +19,7 @@ const BookingPage = () => {
     const [floor, setFloor] = useState("Floor 1");
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
+    const [showModal, setShowModal] = useState(false);
     const [duration, setDuration] = useState(1);
     const [reservations, setReservations] = useState([]);
     const [seats, setSeats] = useState(
@@ -110,6 +111,7 @@ const BookingPage = () => {
             await handleGetReservations();
 
             setSeats(updatedSeats);
+            setShowModal(true); // Show the modal
             setSelectedSeat(null);
             alert(
                 response.data.message ||
@@ -122,7 +124,10 @@ const BookingPage = () => {
             alert(message);
         }
     };
-
+    const handleBackToDashboard = () => {
+        console.log("Navigating to dashboard...");
+        setShowModal(false);
+    };
     return (
         <div className="min-h-screen bg-gray-100">
             <Navbar />
@@ -252,12 +257,56 @@ const BookingPage = () => {
                             </div>
                         ))}
                     </div>
-                    <button
-                        onClick={handleReserveSeat}
-                        className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-md"
-                    >
-                        Reserve Seat
-                    </button>
+                    {/* Legend */}
+                    <div className="mt-6 flex justify-center space-x-6">
+                        <span className="flex items-center space-x-2">
+                            <MdOutlineChair className="text-gray-400" />
+                            <span>Available</span>
+                        </span>
+                        <span className="flex items-center space-x-2">
+                            <MdOutlineChair className="text-red-500" />
+                            <span>Reserved</span>
+                        </span>
+                        <span className="flex items-center space-x-2">
+                            <MdOutlineChair className="text-blue-500" />
+                            <span>Selected</span>
+                        </span>
+                    </div>
+
+                    {/* Reserve Button */}
+                    <div className="flex justify-center mt-6">
+                        <button
+                            onClick={handleReserveSeat}
+                            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        >
+                            Reserve Seat
+                        </button>
+                    </div>
+                    {/* Modal */}
+                    {showModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                            <div className="bg-white rounded-md p-6 w-96 text-center space-y-4 shadow-lg">
+                                <h3 className="text-lg font-semibold">
+                                    Thank you for your reservation!
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    Your seat reservation is confirmed. Please
+                                    arrive 5 minutes before the reservation.
+                                    Enjoy your experience.
+                                </p>
+                                <div className="bg-red-100 text-red-500 px-4 py-2 rounded-md text-sm">
+                                    Reservation ID:{" "}
+                                    <strong>#{89415424585}</strong>
+                                </div>
+                                <button
+                                    onClick={handleBackToDashboard}
+                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+                                >
+                                    Back to Dashboard
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
             <ReservationHistory reservations={reservations} />

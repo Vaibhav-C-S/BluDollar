@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineChair } from "react-icons/md";
+import Navbar from "./Navbar";
 
 const BookingPage = () => {
     const floorMapping = {
@@ -83,7 +84,9 @@ const BookingPage = () => {
             <Navbar />
 
             <div className="p-6">
-                <h2 className="text-2xl font-bold mb-4 text-center">Reservation Form</h2>
+                <h2 className="text-2xl font-bold mb-4 text-center">
+                    Reservation Form
+                </h2>
                 <div className="space-y-4">
                     {/* Form Inputs */}
                     {/* Floor */}
@@ -104,17 +107,32 @@ const BookingPage = () => {
                 </h2>
                 <div className="grid grid-cols-4 gap-8">
                     {seats.map((table) => (
-                        <div key={table.table} className="relative w-48 h-48 bg-gray-200 rounded-full">
-                            <div className="absolute-center font-bold">Table {table.table}</div>
+                        <div
+                            key={table.table}
+                            className="relative w-48 h-48 bg-gray-200 rounded-full"
+                        >
+                            <div className="absolute-center font-bold">
+                                Table {table.table}
+                            </div>
                             {table.chairs.map((chair, index) => (
                                 <button
                                     key={chair.number}
                                     className={`absolute ${
-                                        chair.reserved ? "text-red-500" : selectedSeat === chair.number ? "text-blue-500" : "text-gray-400"
+                                        chair.reserved
+                                            ? "text-red-500"
+                                            : selectedSeat === chair.number
+                                            ? "text-blue-500"
+                                            : "text-gray-400"
                                     }`}
-                                    style={{ /* styles omitted for brevity */ }}
+                                    style={
+                                        {
+                                            /* styles omitted for brevity */
+                                        }
+                                    }
                                     disabled={chair.reserved}
-                                    onClick={() => setSelectedSeat(chair.number)}
+                                    onClick={() =>
+                                        setSelectedSeat(chair.number)
+                                    }
                                 >
                                     <MdOutlineChair />
                                 </button>
@@ -123,8 +141,8 @@ const BookingPage = () => {
                     ))}
                 </div>
 
-                   {/* Legend */}
-                   <div className="mt-6 flex justify-center space-x-6">
+                {/* Legend */}
+                <div className="mt-6 flex justify-center space-x-6">
                     <span className="flex items-center space-x-2">
                         <MdOutlineChair className="text-gray-400" />
                         <span>Available</span>
