@@ -1,7 +1,6 @@
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-//import axios from "axios";
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -11,7 +10,7 @@ const Login = () => {
     const [passwordError, setPasswordError] = useState("");
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(<FaEyeSlash />);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const validateEmail = (value) => {
         if (!value.endsWith("@ibm.com")) {
@@ -45,15 +44,15 @@ const Login = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-    
+
         validateEmail(email);
         validatePassword();
-    
+
         if (emailError || passwordError || !email || !password) {
             alert("Please fix the errors before submitting.");
             return;
         }
-    
+
         try {
             const response = await fetch("http://localhost:5500/api/login", {
                 method: "POST",
@@ -63,48 +62,58 @@ const Login = () => {
                 credentials: "include", // Include credentials like cookies with the request
                 body: JSON.stringify({ email, password }),
             });
-    
+
             if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
+                throw new Error(
+                    `Error: ${response.status} ${response.statusText}`
+                );
             }
-    
+
             const data = await response.json(); // Parse the JSON response
             console.log("Response Data:", data); // Print JSON response to the console
-    
+
             // Store the token in cookies
             Cookies.set("token", data.token, {
                 path: "/", // Cookie available on all pages
-                
+
                 sameSite: "Strict", // Prevent CSRF attacks
             });
-    
+
             // Store the token in local storage
             //localStorage.setItem("token", data.token);
-            console.log("Token in LocalStorage:", localStorage.getItem("token"));
-    
-            //alert("Login successful!");
+            console.log(
+                "Token in LocalStorage:",
+                localStorage.getItem("token")
+            );
 
             if (data.role === "employee") {
                 navigate("/booking");
             } else {
-                // Optionally, navigate to a manager page or elsewhere if needed
                 navigate("/manager");
             }
-
         } catch (error) {
             console.error("Error during login:", error);
             alert("Login failed. Please try again.");
         }
     };
-    
-    
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <div
+            className="flex items-center justify-center min-h-screen"
+            style={{
+                backgroundImage:
+                    "url('https://t4.ftcdn.net/jpg/05/51/93/35/360_F_551933523_nBWNQeC6vA8sDE6DDDQeo3YmSRQnlOjN.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+            }}
+        >
+            <div
+                className="p-8 rounded-lg shadow-md w-full max-w-md"
+                style={{ backgroundColor: "rgba(210, 180, 140, 0.8)" }}
+            >
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold">Blu-Reserve System</h2>
-                    <p className="text-gray-500">Cafeteria Seat Reservation</p>
+                    <p className="text-gray-1000">Cafeteria Seat Reservation</p>
                 </div>
                 <form onSubmit={handleFormSubmit}>
                     <div className="mb-4">
@@ -186,4 +195,3 @@ const Login = () => {
 };
 
 export default Login;
-
